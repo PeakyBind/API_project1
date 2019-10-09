@@ -12,7 +12,7 @@ signToken = user => {
 
 module.exports = {
   signUp: async (req, res, next) => {
-    const { email, password } = req.body;
+    const { email, password } = req.value.body;
 
     const foundUser = await User.findOne({ email });
     if (foundUser) { return res.status(403).json({ error: "Email is already used" }); }
@@ -32,7 +32,6 @@ module.exports = {
   },
 
   secret: async (req, res, next) => {
-    console.log('I managed to get here');
     res.json({ secret: "ressource" })
   }
 };
