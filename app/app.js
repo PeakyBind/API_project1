@@ -3,9 +3,19 @@ var express = require('express'),
   path = require('path'),
   bodyParser = require('body-parser'),
   dotenv = require('dotenv'),
-  mongoose = require('mongoose');
+  mongoose = require('mongoose'),
+  passport = require('passport');
+
 // Initialisation de dotenv
 dotenv.config();
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+  done(null, obj);
+});
 
 // Connexion à la base de données
 if (process.env.NODE_ENV === 'test') {
@@ -35,10 +45,9 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
   app.use(bodyParser.urlencoded({ extended: true }));
 }
+app.use(passport.initialize());
 app.use(bodyParser.json());
-
-// Routes
-app.use('/users', require('./routes/usersRoutes'));
+app.use('/uploads', express.static('uploads'));
 
 // CORS
 if (process.env.NODE_ENV !== 'test') {
@@ -50,5 +59,11 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
+// Routes
+app.use('/users', require('./routes/usersRoutes'));
+app.use('/categories', require('./routes/categoriesRoutes'));
+app.use('/trainings', require('./routes/trainingsRoutes'));
+app.use('/tutorials', require('./routes/tutorialsRoute'));
+app.use('/articles', require('./routes/articlesRoutes'));
 
 module.exports = app;
